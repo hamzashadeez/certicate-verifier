@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/bootstrap.css">
+    <title>Saved Certificates</title>
+    <style>
+        .small{
+            font-size: 11px !important;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <header class="bg-primary px-3 py-3">
+        <h5 class="text-white m-0">Saved Certificates</h5>
+    </header>
+    <main class="container">
+        <div class="d-flex my-2 align-items-center justify-content-between">
+
+            <h5 class="text-muted ">Saved Certicates</h5>
+            <a href="../index.html" class="btn btn-success">Back</a>
+        </div>
+        <table class="table table-striped table-hover table-responsive table-sm">
+            <thead class="table-dark">
+                <tr class="bg-dark">
+                    <td>Degree Title</td>
+                    <td>Institution</td>
+                    <td>Year</td>
+                    <td>Class Degree</td>
+                    <td>ID</td>
+                </tr>
+                <tbody id="table_body">
+                   
+                </tbody>
+            </thead>
+        </table>
+    </main>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js";
+        import { doc, getDocs, collection, getFirestore } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+       
+        const firebaseConfig = {
+            apiKey: "AIzaSyBl1fdLBNK4RWDfXaOAHDPJvBXQyxHisDs",
+            authDomain: "booked-baa25.firebaseapp.com",
+            projectId: "booked-baa25",
+            storageBucket: "booked-baa25.appspot.com",
+            messagingSenderId: "1080769708361",
+            appId: "1:1080769708361:web:568d2a74108c75375d1a98",
+            measurementId: "G-LRLSR06CY2"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app)
+
+        const createTableList = (list)=>{
+            const tableBody = document.getElementById("table_body");
+            tableBody.innerHTML = ""
+
+            const deleteIt = () => {
+                alert("delete")
+            }
+            list.map((li)=>{
+                console.log(li)
+                var html = `<tr>
+                            <td>${li.degreeTitle}</td>
+                            <td>${li.institution}</td>
+                            <td>${li.year}</td>
+                            <td>${li.classDegree}</td>
+                            <td>${li.id}</td>
+                            </tr>`
+                            // <td><button onClick='deleteIt()' class="btn btn-danger py-1 small">Delete</button></td>
+                tableBody.innerHTML += html
+            })
+
+        }
+
+        
+        const getData = async ()=>{
+            let data = []
+            console.log("loading")
+            const querySnapshot = await getDocs(collection(db, "certificate"));
+            querySnapshot.forEach((doc) => {
+                data.push(doc.data())
+                // doc.data() is never undefined for query doc snapshots
+                // console.log("data: ",doc.id, " => ", doc.data());
+            });
+            createTableList(data)
+            console.log("done")
+        }
+
+        getData()
+
+    </script>
+</body>
+
+</html>
